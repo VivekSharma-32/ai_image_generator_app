@@ -14,6 +14,11 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-GenerateImageAIApp-GenerateImageAIAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-GenerateImageAIApp-GenerateImageAIAppTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		41D93DB44B7E4A068A6BBCE6 /* SpaceGrotesk-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4ECBA52FF8214A2CB2292388 /* SpaceGrotesk-Bold.ttf */; };
+		8C38A77D14C74349BFEC21D9 /* SpaceGrotesk-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6F5974A8ACDE4A3EB00B174A /* SpaceGrotesk-Light.ttf */; };
+		8FACD57AC1DD419DB3B3C5F0 /* SpaceGrotesk-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 70312B85095E49A9AB292A8E /* SpaceGrotesk-Medium.ttf */; };
+		D3D94FBE25554CB9B2578E87 /* SpaceGrotesk-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C2BA99D2A870460B8D42A44B /* SpaceGrotesk-Regular.ttf */; };
+		E1FE968344484B46A2DB47F9 /* SpaceGrotesk-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A3358B7A6D2844498E941874 /* SpaceGrotesk-SemiBold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +50,11 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = GenerateImageAIApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-GenerateImageAIApp-GenerateImageAIAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GenerateImageAIApp-GenerateImageAIAppTests.release.xcconfig"; path = "Target Support Files/Pods-GenerateImageAIApp-GenerateImageAIAppTests/Pods-GenerateImageAIApp-GenerateImageAIAppTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		4ECBA52FF8214A2CB2292388 /* SpaceGrotesk-Bold.ttf */ = {isa = PBXFileReference; name = "SpaceGrotesk-Bold.ttf"; path = "../src/assets/fonts/SpaceGrotesk-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		6F5974A8ACDE4A3EB00B174A /* SpaceGrotesk-Light.ttf */ = {isa = PBXFileReference; name = "SpaceGrotesk-Light.ttf"; path = "../src/assets/fonts/SpaceGrotesk-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		70312B85095E49A9AB292A8E /* SpaceGrotesk-Medium.ttf */ = {isa = PBXFileReference; name = "SpaceGrotesk-Medium.ttf"; path = "../src/assets/fonts/SpaceGrotesk-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		C2BA99D2A870460B8D42A44B /* SpaceGrotesk-Regular.ttf */ = {isa = PBXFileReference; name = "SpaceGrotesk-Regular.ttf"; path = "../src/assets/fonts/SpaceGrotesk-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		A3358B7A6D2844498E941874 /* SpaceGrotesk-SemiBold.ttf */ = {isa = PBXFileReference; name = "SpaceGrotesk-SemiBold.ttf"; path = "../src/assets/fonts/SpaceGrotesk-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +134,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				89ABB11D028343C0B7DBC478 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -149,6 +160,19 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		89ABB11D028343C0B7DBC478 /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				4ECBA52FF8214A2CB2292388 /* SpaceGrotesk-Bold.ttf */,
+				6F5974A8ACDE4A3EB00B174A /* SpaceGrotesk-Light.ttf */,
+				70312B85095E49A9AB292A8E /* SpaceGrotesk-Medium.ttf */,
+				C2BA99D2A870460B8D42A44B /* SpaceGrotesk-Regular.ttf */,
+				A3358B7A6D2844498E941874 /* SpaceGrotesk-SemiBold.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -245,6 +269,11 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				41D93DB44B7E4A068A6BBCE6 /* SpaceGrotesk-Bold.ttf in Resources */,
+				8C38A77D14C74349BFEC21D9 /* SpaceGrotesk-Light.ttf in Resources */,
+				8FACD57AC1DD419DB3B3C5F0 /* SpaceGrotesk-Medium.ttf in Resources */,
+				D3D94FBE25554CB9B2578E87 /* SpaceGrotesk-Regular.ttf in Resources */,
+				E1FE968344484B46A2DB47F9 /* SpaceGrotesk-SemiBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
