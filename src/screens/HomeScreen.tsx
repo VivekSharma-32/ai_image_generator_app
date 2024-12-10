@@ -16,7 +16,9 @@ import ImageCard from '../components/ImageCard';
 const HomeScreen = () => {
   const [prompt, setPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState(
+    'https://images.nightcafe.studio/jobs/hVccyZiCpHZyLdfDIcKg/hVccyZiCpHZyLdfDIcKg--1--sczqn.jpg?tr=w-1600,c-at_max',
+  );
   const handleOpenLink = () => {
     // Open link:TODO
     const url = '';

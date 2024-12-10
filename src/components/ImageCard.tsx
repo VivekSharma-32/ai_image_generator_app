@@ -1,9 +1,86 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import {
+  Image,
+  Modal,
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, {useState} from 'react';
 import {fontFamily} from '../theme';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {requestWriteStoragePermission} from '../utils';
+import ReactNativeBlobUtil from 'react-native-blob-util';
 
 const ImageCard = ({item}: any) => {
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState(0);
+  const handleDownload = async () => {
+    // ask the permission
+    const isGranted = await requestWriteStoragePermission();
+
+    if (!isGranted) {
+      return;
+    }
+
+    // download the file  using react native blob utils
+    const imageUrl = item.imageUrl;
+    // console.log('Image url', imageUrl);
+    let PictureDir = ReactNativeBlobUtil.fs.dirs.PictureDir;
+    // console.log('Piture Directory', PictureDir);
+    const filePath = `${PictureDir}/download_image_${Date.now()}.png`;
+    // console.log('File Path', filePath);
+    setIsDownloading(true);
+    ReactNativeBlobUtil.config({
+      path: filePath,
+      appendExt: 'png',
+      fileCache: true,
+      addAndroidDownloads: {
+        useDownloadManager: true,
+        notification: true,
+        path: filePath,
+        description: 'Downloading Image',
+        mime: 'image/png',
+        mediaScannable: true,
+      },
+    })
+      .fetch('GET', imageUrl)
+      .progress({interval: 100}, (received, total) => {
+        console.log('Total', total);
+        console.log('Received', received);
+
+        const percentage = (received / total) * 100; // Calculate percentage
+        setDownloadProgress(percentage); // Update progress
+      })
+      .then(res => {
+        copyMediaToStorage(filePath, filePath);
+        setIsDownloading(false);
+        setDownloadProgress(0);
+        ToastAndroid.show('Image downloaded successfully', ToastAndroid.SHORT);
+      })
+      .catch(error => {
+        setIsDownloading(false);
+        console.error('Download error: ', error);
+      });
+  };
+
+  const copyMediaToStorage = async (filePath: string, fileName: string) => {
+    try {
+      await ReactNativeBlobUtil.MediaCollection.copyToMediaStore(
+        {
+          name: fileName,
+          parentFolder: 'dreamai',
+          mimeType: 'image/png',
+        },
+        'Download',
+        filePath,
+      );
+      console.log('File copied to the media store successfully');
+    } catch (error) {
+      console.log('Failed to copy file to media store');
+    }
+  };
   return (
     <View style={styles.imageCard}>
       {/* image  */}
@@ -16,7 +93,7 @@ const ImageCard = ({item}: any) => {
       <Text style={styles.promptText}>{item?.prompt || 'No Prompt'}</Text>
       {/* button container  */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.actionButton}>
+        <TouchableOpacity style={styles.actionButton} onPress={handleDownload}>
           <Ionicons name="download-outline" size={25} color={'#ffffff'} />
         </TouchableOpacity>
 
@@ -32,6 +109,24 @@ const ImageCard = ({item}: any) => {
           <Ionicons name="heart-outline" size={25} color={'#ffffff'} />
         </TouchableOpacity>
       </View>
+
+      {/* Modal container  */}
+      <Modal transparent={true} animationType="fade" visible={isDownloading}>
+        <View style={styles.overlay}>
+          <View style={styles.progressContainer}>
+            <Text style={styles.progressTitle}>Downloading Image</Text>
+            <Text style={styles.progressText}>{downloadProgress}%</Text>
+            <Text style={styles.progressDescription}>
+              Please wait while we are downloading your image.
+            </Text>
+            <View style={styles.progressBarContainer}>
+              <View
+                style={[styles.prgressBar, {width: `${downloadProgress}%`}]}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -68,5 +163,49 @@ const styles = StyleSheet.create({
     backgroundColor: '#444',
     borderRadius: 50,
     alignItems: 'center',
+  },
+  overlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.7)',
+  },
+  progressContainer: {
+    width: '80%',
+    backgroundColor: '#222',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  prgressBar: {
+    height: 10,
+    backgroundColor: '#76c7c0',
+    borderRadius: 5,
+  },
+  progressTitle: {
+    fontSize: 18,
+    color: '#fff',
+    fontFamily: fontFamily.bold,
+    marginBottom: 10,
+  },
+  progressText: {
+    fontSize: 24,
+    fontFamily: fontFamily.bold,
+    color: '#fff',
+    marginBottom: 10,
+  },
+  progressDescription: {
+    fontSize: 14,
+    color: '#fff',
+    fontFamily: fontFamily.regular,
+    textAlign: 'center',
+    marginTop: 10,
+  },
+  progressBarContainer: {
+    width: '100%',
+    height: 10,
+    backgroundColor: '#444',
+    borderRadius: 5,
+    marginTop: 10,
   },
 });

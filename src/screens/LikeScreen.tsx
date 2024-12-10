@@ -6,6 +6,7 @@ import ImageCard from '../components/ImageCard';
 
 const LikeScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
+  const [data, setData] = useState([]);
   // const data = [
   //   {
   //     id: 1,
@@ -27,7 +28,7 @@ const LikeScreen = () => {
   //   },
   // ];
 
-  const data = [];
+  // const data = [];
   const onRefresh = () => {
     setRefreshing(true);
     // make an api call
@@ -39,7 +40,7 @@ const LikeScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Liked Image</Text>
       <FlatList
-        data={[]}
+        data={data}
         renderItem={({item, index}) => {
           return <ImageCard item={item} />;
         }}
