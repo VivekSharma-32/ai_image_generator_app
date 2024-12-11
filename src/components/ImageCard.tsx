@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Share from 'react-native-share';
 import React, {useState} from 'react';
 import {fontFamily} from '../theme';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -15,7 +16,10 @@ import ReactNativeBlobUtil from 'react-native-blob-util';
 
 const ImageCard = ({item}: any) => {
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState(0);
+
+  // function to download the image
   const handleDownload = async () => {
     // ask the permission
     const isGranted = await requestWriteStoragePermission();
@@ -65,6 +69,7 @@ const ImageCard = ({item}: any) => {
       });
   };
 
+  // this function will copy the image in the photos
   const copyMediaToStorage = async (filePath: string, fileName: string) => {
     try {
       await ReactNativeBlobUtil.MediaCollection.copyToMediaStore(
@@ -81,6 +86,63 @@ const ImageCard = ({item}: any) => {
       console.log('Failed to copy file to media store');
     }
   };
+
+  const processImageToShare = async () => {
+    // ask the permission
+    const isGranted = await requestWriteStoragePermission();
+
+    if (!isGranted) {
+      return;
+    }
+
+    // download the file  using react native blob utils
+    const imageUrl = item.imageUrl;
+    let PictureDir = ReactNativeBlobUtil.fs.dirs.PictureDir;
+    const filePath = `${PictureDir}/download_image_${Date.now()}.png`;
+    setIsProcessing(true);
+    ReactNativeBlobUtil.config({
+      path: filePath,
+      appendExt: 'png',
+      fileCache: true,
+    })
+      .fetch('GET', imageUrl)
+      .progress({interval: 100}, (received, total) => {
+        const percentage = (received / total) * 100; // Calculate percentage
+        setDownloadProgress(percentage); // Update progress
+      })
+      .then(res => {
+        setIsProcessing(false);
+        setDownloadProgress(0);
+        const base64Data = res.data;
+        if (!base64Data) {
+          ToastAndroid.show('No Image to share', ToastAndroid.SHORT);
+        }
+        const options = {
+          title: 'Share Image',
+          url: `file://${base64Data}`,
+          message: 'Checkout this image',
+        };
+        Share.open(options)
+          .then(res => {
+            console.log(res);
+          })
+          .catch(err => {
+            err && console.log(err);
+          });
+      })
+
+      .catch(error => {
+        setIsDownloading(false);
+        console.error('Download error: ', error);
+        return null;
+      });
+  };
+
+  // function to share the image
+  const handleShareImage = async () => {
+    await processImageToShare();
+  };
+
   return (
     <View style={styles.imageCard}>
       {/* image  */}
@@ -97,7 +159,9 @@ const ImageCard = ({item}: any) => {
           <Ionicons name="download-outline" size={25} color={'#ffffff'} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.actionButton}>
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={handleShareImage}>
           <Ionicons name="share-outline" size={25} color={'#ffffff'} />
         </TouchableOpacity>
 
@@ -111,13 +175,19 @@ const ImageCard = ({item}: any) => {
       </View>
 
       {/* Modal container  */}
-      <Modal transparent={true} animationType="fade" visible={isDownloading}>
+      <Modal
+        transparent={true}
+        animationType="fade"
+        visible={isDownloading || isProcessing}>
         <View style={styles.overlay}>
           <View style={styles.progressContainer}>
-            <Text style={styles.progressTitle}>Downloading Image</Text>
+            <Text style={styles.progressTitle}>
+              {isProcessing ? 'Processing' : 'Downloading'} Image
+            </Text>
             <Text style={styles.progressText}>{downloadProgress}%</Text>
             <Text style={styles.progressDescription}>
-              Please wait while we are downloading your image.
+              Please wait while we are{' '}
+              {isProcessing ? 'processing' : 'downloading'} your image.
             </Text>
             <View style={styles.progressBarContainer}>
               <View

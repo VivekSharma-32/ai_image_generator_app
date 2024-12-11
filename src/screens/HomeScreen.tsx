@@ -16,15 +16,20 @@ import ImageCard from '../components/ImageCard';
 const HomeScreen = () => {
   const [prompt, setPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [image, setImage] = useState(
-    'https://images.nightcafe.studio/jobs/hVccyZiCpHZyLdfDIcKg/hVccyZiCpHZyLdfDIcKg--1--sczqn.jpg?tr=w-1600,c-at_max',
-  );
+  const [image, setImage] = useState('');
   const handleOpenLink = () => {
     // Open link:TODO
     const url = '';
     Linking.openURL(url).catch(error => {
       console.log(error);
     });
+  };
+
+  // this function will clear the text
+  const clearText = () => {
+    if (prompt !== '') {
+      setPrompt('');
+    }
   };
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -59,7 +64,7 @@ const HomeScreen = () => {
             onChangeText={setPrompt}
           />
           {prompt ? (
-            <TouchableOpacity style={styles.clearButton}>
+            <TouchableOpacity style={styles.clearButton} onPress={clearText}>
               <Icon name="close" size={24} color={'#fff'} />
             </TouchableOpacity>
           ) : null}
