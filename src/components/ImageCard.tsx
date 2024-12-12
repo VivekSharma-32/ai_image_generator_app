@@ -13,6 +13,7 @@ import {fontFamily} from '../theme';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {requestWriteStoragePermission} from '../utils';
 import ReactNativeBlobUtil from 'react-native-blob-util';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 const ImageCard = ({item}: any) => {
   const [isDownloading, setIsDownloading] = useState(false);
@@ -30,11 +31,8 @@ const ImageCard = ({item}: any) => {
 
     // download the file  using react native blob utils
     const imageUrl = item.imageUrl;
-    // console.log('Image url', imageUrl);
     let PictureDir = ReactNativeBlobUtil.fs.dirs.PictureDir;
-    // console.log('Piture Directory', PictureDir);
     const filePath = `${PictureDir}/download_image_${Date.now()}.png`;
-    // console.log('File Path', filePath);
     setIsDownloading(true);
     ReactNativeBlobUtil.config({
       path: filePath,
@@ -51,9 +49,6 @@ const ImageCard = ({item}: any) => {
     })
       .fetch('GET', imageUrl)
       .progress({interval: 100}, (received, total) => {
-        console.log('Total', total);
-        console.log('Received', received);
-
         const percentage = (received / total) * 100; // Calculate percentage
         setDownloadProgress(percentage); // Update progress
       })
@@ -114,33 +109,42 @@ const ImageCard = ({item}: any) => {
         setIsProcessing(false);
         setDownloadProgress(0);
         const base64Data = res.data;
-        if (!base64Data) {
-          ToastAndroid.show('No Image to share', ToastAndroid.SHORT);
-        }
-        const options = {
-          title: 'Share Image',
-          url: `file://${base64Data}`,
-          message: 'Checkout this image',
-        };
-        Share.open(options)
-          .then(res => {
-            console.log(res);
-          })
-          .catch(err => {
-            err && console.log(err);
-          });
-      })
+        console.log('base64Data', base64Data);
+        // if (!base64Data) {
+        //   ToastAndroid.show('No Image to share', ToastAndroid.SHORT);
+        // }
 
-      .catch(error => {
-        setIsDownloading(false);
-        console.error('Download error: ', error);
-        return null;
+        // console.log('base64Data', base64Data);
+        // const options = {
+        //   title: 'Share Image',
+        //   url: `file://${base64Data}`,
+        //   message: 'Checkout this image',
+        // };
+        // Share.open(options)
+        //   .then(res => {
+        //     console.log(res);
+        //   })
+        //   .catch(err => {
+        //     err && console.log(err);
+        //   });
       });
+
+    // .catch(error => {
+    //   setIsDownloading(false);
+    //   console.error('Download error: ', error);
+    //   return null;
+    // });
   };
 
   // function to share the image
   const handleShareImage = async () => {
-    await processImageToShare();
+    const base64Data = await processImageToShare();
+  };
+
+  const handleCopyImage = () => {
+    const imageUrl = item.imageUrl;
+    Clipboard.setString(imageUrl);
+    ToastAndroid.show('Image url copied successfully', ToastAndroid.SHORT);
   };
 
   return (
@@ -165,7 +169,7 @@ const ImageCard = ({item}: any) => {
           <Ionicons name="share-outline" size={25} color={'#ffffff'} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.actionButton}>
+        <TouchableOpacity style={styles.actionButton} onPress={handleCopyImage}>
           <Ionicons name="copy-outline" size={25} color={'#ffffff'} />
         </TouchableOpacity>
 
