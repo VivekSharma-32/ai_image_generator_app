@@ -8,17 +8,22 @@ import {
   View,
 } from 'react-native';
 import Share from 'react-native-share';
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {fontFamily} from '../theme';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {requestWriteStoragePermission} from '../utils';
 import ReactNativeBlobUtil from 'react-native-blob-util';
 import Clipboard from '@react-native-clipboard/clipboard';
+import {LikeImagesContext} from '../context/LikeImageContext';
 
 const ImageCard = ({item}: any) => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState(0);
+
+  const {likedImages, toggleLikeImage} = useContext(LikeImagesContext);
+
+  console.log(likedImages);
 
   // function to download the image
   const handleDownload = async () => {
@@ -28,7 +33,6 @@ const ImageCard = ({item}: any) => {
     if (!isGranted) {
       return;
     }
-
     // download the file  using react native blob utils
     const imageUrl = item.imageUrl;
     let PictureDir = ReactNativeBlobUtil.fs.dirs.PictureDir;
@@ -147,6 +151,12 @@ const ImageCard = ({item}: any) => {
     ToastAndroid.show('Image url copied successfully', ToastAndroid.SHORT);
   };
 
+  const handleLikeImage = () => {
+    toggleLikeImage(item);
+  };
+
+  const isLiked = likedImages.some(likeImage => likeImage._id === item._id);
+
   return (
     <View style={styles.imageCard}>
       {/* image  */}
@@ -173,8 +183,12 @@ const ImageCard = ({item}: any) => {
           <Ionicons name="copy-outline" size={25} color={'#ffffff'} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.actionButton}>
-          <Ionicons name="heart-outline" size={25} color={'#ffffff'} />
+        <TouchableOpacity style={styles.actionButton} onPress={handleLikeImage}>
+          <Ionicons
+            name={isLiked ? 'heart' : 'heart-outline'}
+            size={25}
+            color={isLiked ? '#ec0803' : '#ffffff'}
+          />
         </TouchableOpacity>
       </View>
 

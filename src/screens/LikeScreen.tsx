@@ -1,10 +1,12 @@
 import {FlatList, RefreshControl, StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {fontFamily, fontSize} from '../theme';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ImageCard from '../components/ImageCard';
+import {LikeImagesContext} from '../context/LikeImageContext';
 
 const LikeScreen = () => {
+  const {likedImages} = useContext(LikeImagesContext);
   const [refreshing, setRefreshing] = useState(false);
   const [data, setData] = useState([]);
   // const data = [
@@ -40,14 +42,15 @@ const LikeScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Liked Image</Text>
       <FlatList
-        data={data}
+        data={likedImages}
         renderItem={({item, index}) => {
           return <ImageCard item={item} />;
         }}
         keyExtractor={item => item.id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={
-          (styles.listContainer, data.length === 0 && styles.emptyListContainer)
+          (styles.listContainer,
+          likedImages.length === 0 && styles.emptyListContainer)
         }
         refreshControl={
           <RefreshControl

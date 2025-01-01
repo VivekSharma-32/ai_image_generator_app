@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -12,11 +13,13 @@ import React, {useState} from 'react';
 import {fontFamily} from '../theme';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ImageCard from '../components/ImageCard';
+import {api} from '../utils/api';
 
 const HomeScreen = () => {
   const [prompt, setPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState('');
+
   const handleOpenLink = () => {
     // Open link:TODO
     const url = '';
@@ -25,11 +28,32 @@ const HomeScreen = () => {
     });
   };
 
-  // this function will clear the text
-  const clearText = () => {
-    if (prompt !== '') {
-      setPrompt('');
+  const handleGenerateImage = async () => {
+    try {
+      setIsLoading(true);
+      if (!prompt.length) {
+        ToastAndroid.show(
+          'Please enter the prompt to generate the image',
+          ToastAndroid.SHORT,
+        );
+        return;
+      }
+      const response = await api.post('/generate-image', {
+        prompt,
+      });
+
+      setImage(response?.data?.imageUrl);
+      ToastAndroid.show('Image generated Successfully', ToastAndroid.SHORT);
+      setIsLoading(false);
+    } catch (error) {
+      ToastAndroid.show('Something went wrong.', ToastAndroid.SHORT);
+      setIsLoading(false);
     }
+  };
+
+  // this function will clear the text
+  const handleClearPrompt = () => {
+    setPrompt('');
   };
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -64,7 +88,9 @@ const HomeScreen = () => {
             onChangeText={setPrompt}
           />
           {prompt ? (
-            <TouchableOpacity style={styles.clearButton} onPress={clearText}>
+            <TouchableOpacity
+              style={styles.clearButton}
+              onPress={handleClearPrompt}>
               <Icon name="close" size={24} color={'#fff'} />
             </TouchableOpacity>
           ) : null}
@@ -72,7 +98,10 @@ const HomeScreen = () => {
       </View>
 
       {/* Generate Button  */}
-      <TouchableOpacity style={styles.generateButton}>
+      <TouchableOpacity
+        style={styles.generateButton}
+        onPress={handleGenerateImage}
+        disabled={prompt === '' ? true : false}>
         {isLoading ? (
           <ActivityIndicator size={'small'} color={'white'} />
         ) : (

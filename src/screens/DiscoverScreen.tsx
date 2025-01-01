@@ -1,47 +1,75 @@
-import {FlatList, RefreshControl, StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  View,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {fontFamily} from '../theme';
 import ImageCard from '../components/ImageCard';
+import {api} from '../utils/api';
 
 const DiscoverScreen = () => {
-  const [refreshing, setRefreshing] = useState(false);
+  const [page, setPage] = useState<number>(1);
+  const [images, setImages] = useState([]);
+  const [hasNextPage, setHasNextPage] = useState(true);
 
-  const data = [
-    {
-      id: 1,
-      imageUrl:
-        'https://images.nightcafe.studio/jobs/hVccyZiCpHZyLdfDIcKg/hVccyZiCpHZyLdfDIcKg--1--sczqn.jpg?tr=w-1600,c-at_max',
-      prompt: 'Generate an AI Image',
-    },
-    {
-      id: 2,
-      imageUrl:
-        'https://images.nightcafe.studio/jobs/hVccyZiCpHZyLdfDIcKg/hVccyZiCpHZyLdfDIcKg--1--sczqn.jpg?tr=w-1600,c-at_max',
-      prompt: 'Generate an AI Image',
-    },
-    {
-      id: 3,
-      imageUrl:
-        'https://images.nightcafe.studio/jobs/hVccyZiCpHZyLdfDIcKg/hVccyZiCpHZyLdfDIcKg--1--sczqn.jpg?tr=w-1600,c-at_max',
-      prompt: 'Generate an AI Image',
-    },
-  ];
+  const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    handleFetchImages();
+  }, [page]);
+
+  const handleFetchImages = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get('/discover-image', {
+        params: {
+          page: page,
+        },
+      });
+
+      if (page == 1) {
+        setImages(response?.data?.images);
+      } else {
+        setImages(prevImages => [...prevImages, ...response?.data?.images]);
+      }
+
+      let isNextPage =
+        response?.data?.totalPages > response?.data?.currentPage ? true : false;
+      setHasNextPage(isNextPage);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      ToastAndroid.show('Something went wrong', ToastAndroid.SHORT);
+    }
+  };
+
+  const handleLoadMoreImages = () => {
+    if (hasNextPage) {
+      setPage(page + 1);
+    }
+  };
 
   const onRefresh = () => {
     setRefreshing(true);
-    // make an api call
-
-    // setRefreshing(false);
+    setPage(1);
+    setRefreshing(false);
   };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Discover</Text>
       <FlatList
-        data={data}
+        data={images}
         renderItem={({item, index}) => {
           return <ImageCard item={item} />;
         }}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item._id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContainer}
         refreshControl={
@@ -51,6 +79,12 @@ const DiscoverScreen = () => {
             tintColor={'#3b82f6'}
           />
         }
+        ListFooterComponent={
+          loading ? (
+            <ActivityIndicator size={'large'} color={'#3bb2f6'} />
+          ) : null
+        }
+        onEndReached={handleLoadMoreImages}
       />
     </View>
   );
