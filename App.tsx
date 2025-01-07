@@ -13,9 +13,6 @@ import SplashScreen from 'react-native-splash-screen';
 const Tab = createBottomTabNavigator();
 
 export default function App() {
-  useEffect(() => {
-    SplashScreen.hide();
-  }, []);
   return (
     <LikeImagesProvider>
       <NavigationContainer>
