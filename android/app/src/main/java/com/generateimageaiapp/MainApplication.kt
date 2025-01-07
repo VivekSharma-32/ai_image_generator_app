@@ -13,6 +13,11 @@ import com.facebook.soloader.SoLoader
 
 class MainApplication : Application(), ReactApplication {
 
+   override fun onCreate(savedInstanceState: Bundle?) {
+    SplashScreen.show(this);  // add this
+    super.onCreate(null)
+  }
+
   override val reactNativeHost: ReactNativeHost =
       object : DefaultReactNativeHost(this) {
         override fun getPackages(): List<ReactPackage> =
