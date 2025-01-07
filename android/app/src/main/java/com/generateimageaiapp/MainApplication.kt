@@ -1,5 +1,4 @@
 package com.generateimageaiapp
-
 import android.app.Application
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
@@ -13,6 +12,11 @@ import com.facebook.react.soloader.OpenSourceMergedSoMapping
 import com.facebook.soloader.SoLoader
 
 class MainApplication : Application(), ReactApplication {
+
+   override fun onCreate(savedInstanceState: Bundle?) {
+    SplashScreen.show(this);  // add this
+    super.onCreate(null)
+  }
 
   override val reactNativeHost: ReactNativeHost =
       object : DefaultReactNativeHost(this) {

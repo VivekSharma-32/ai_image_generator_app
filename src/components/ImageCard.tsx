@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Share from 'react-native-share';
 import React, {useContext, useState} from 'react';
 import {fontFamily} from '../theme';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -155,7 +154,7 @@ const ImageCard = ({item}: any) => {
     toggleLikeImage(item);
   };
 
-  const isLiked = likedImages.some(likeImage => likeImage._id === item._id);
+  const isLiked = likedImages.some(likeImage => likeImage._id == item._id);
 
   return (
     <View style={styles.imageCard}>

@@ -7,10 +7,15 @@ import {colors} from './src/theme';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {LikeImagesProvider} from './src/context/LikeImageContext';
+import {useEffect} from 'react';
+import SplashScreen from 'react-native-splash-screen';
 
 const Tab = createBottomTabNavigator();
 
 export default function App() {
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
   return (
     <LikeImagesProvider>
       <NavigationContainer>
