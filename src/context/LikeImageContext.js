@@ -22,7 +22,7 @@ export const LikeImagesProvider = ({children}) => {
     let likedImages = await AsyncStorage.getItem('likedImages');
     likedImages = likedImages ? JSON.parse(likedImages) : [];
 
-    const imageExist = likedImages.some(item => item._id === genImage._id);
+    const imageExist = likedImages.some(item => item._id == genImage._id);
 
     if (imageExist) {
       likedImages = likedImages.filter(item => item._id !== genImage._id);
